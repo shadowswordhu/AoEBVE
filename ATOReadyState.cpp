@@ -9,6 +9,6 @@ void ATOReadyState::start() {
 void ATOReadyState::run() {
 
 	if (context->getCurrentSpeed() < 1e-5) {
-		context->setATSHandle(max(context->getBrakeHandlePosition(), 0.4), 0);
+		context->setATSHandle(max(context->getBrakeHandlePosition(), 0.6), 0);
 	}
 }

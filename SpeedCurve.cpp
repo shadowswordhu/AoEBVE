@@ -74,8 +74,14 @@ double SpeedCurve::getRange(double speed, bool kmh) {
 	if (kmh) {
 		speed = speed / 3.6;
 	}
+	
 	startSpeed = speed;
 	calc_param();
+
+	if (speed < targetSpeed) {
+		return targetPosition;
+	}
+
 	return targetPosition - (x_t(t_total) + dynamicReactionTime * speed);
 }
 double SpeedCurve::getMaxRange() const {

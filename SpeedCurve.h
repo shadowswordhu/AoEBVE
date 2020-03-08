@@ -5,20 +5,19 @@ class SpeedCurve
 private:
 	double maxSpeedKmh = 130;
 
-	FILE* fout;
+	//FILE* fout;
 
-	double maxDeceleration = 0.75; // m/(s^2)
-	double decelerationRate = 0.1; // m/(s^3)
+	double maxDeceleration = 0.75;          // m/(s^2)
+	double decelerationRate = 0.08;          // m/(s^3)
 	double defaultExpireDistance = 1000000; // m
 	double maxRange = 0;
 
-	double dynamicReactionTime = 20; // s
+	double dynamicReactionTime = 10;        // s
+	double targetSpeed;                     // m/s
+	double targetPosition;                  // m
+	double expirePosition;                  // m
 
-	double targetSpeed; // m/s
-	double targetPosition; // m
-	double expirePosition; // m
-
-	double startSpeed = maxSpeedKmh/3.6;
+	double startSpeed = maxSpeedKmh / 3.6;
 	
 	double t_tr = 0, v_tr = 0, t_const_a = 0, t_total = 0;
 	
@@ -30,7 +29,7 @@ public:
 
 public:
 	SpeedCurve(double _targetSpeed, double _targetPosition, double _expirePosition = -1) {
-		targetSpeed = _targetSpeed/3.6;
+		targetSpeed = _targetSpeed / 3.6;
 		targetPosition = _targetPosition;
 		if (_expirePosition < 0) {
 			expirePosition = targetPosition + defaultExpireDistance;
@@ -40,7 +39,7 @@ public:
 		}
 		
 		calc_param();
-		maxRange = targetPosition - (x_t(t_total) + dynamicReactionTime * maxSpeedKmh / 3.6);;
+		maxRange = targetPosition - (x_t(t_total) + dynamicReactionTime * maxSpeedKmh / 3.6);
 	//DEBUG: ONLY FOR ONE SPEEDCURVE
 		//fout = fopen("R:\\Softwares\\BveTs\\Scenarios\\mackoy.Keisei\\K_SEI3500R\\SCtest.txt", "w");
 	}

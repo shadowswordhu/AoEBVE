@@ -111,7 +111,12 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 	panel[5] = g_atsp.BrakeApplyLamp;
 	panel[6] = g_atsp.AtspLamp;
 	panel[7] = 0; // 故障
-	panel[107] = (int)(g_ato->dbg_ctrlOutput*3.6);
+
+	panel[201] = g_ato->getBrakeOutput();
+
+	panel[233] = (int)(g_ato->dbg_ctrlOutput * 3.6);
+	panel[230] = g_ato->getSpeedCurveAmount() % 10;
+	panel[231] = g_ato->getSpeedCurveAmount() / 10;
 	// サウンド出力
 	sound[0] = g_atssn.Bell;
 	sound[1] = g_atssn.Chime;
