@@ -7,6 +7,9 @@
 #include <vector>
 #include <algorithm>
 #include <queue>
+#include <fstream>
+#include <filesystem>
+#include <string>
 #include <cstdio>
 
 class ATO
@@ -31,7 +34,7 @@ private:
 
 	std::vector<SpeedCurve> speedCurves;
 	int activeBegin = 0, activeEnd = 0;
-	
+
 	void loadProfile();
 
 public:
