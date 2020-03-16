@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "ATOEngagedState.h"
+#include "ATOState.h"
+#include "ATO.h"
 
 void ATOEngagedState::revokeStart() {
 	context->setState(new ATOServiceBrakeState(context));
@@ -12,7 +13,7 @@ void ATOEngagedState::disengage() {
 void ATOEngagedState::run() {
 	double speedTarget = context->getSpeedTarget();
 	context->followSpeed(speedTarget);
-	if (context->getCurrentSpeed() < 1e-5 && speedTarget < 5/3.6) {
+	if (context->getCurrentSpeed() < 1e-5) {
 		context->setState(new ATOReadyState(context));
 	}
 }

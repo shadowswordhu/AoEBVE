@@ -5,8 +5,7 @@ EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 void ATO::loadProfile() { // TODO: Load from file
 	speedCurves.clear();
-	
-	std::wofstream inputFiles("R:\\Softwares\\BveTs\\Scenarios\\JRTozai\\207-1000\\ATOProfile.out");
+	//std::wofstream inputFiles("R:\\Softwares\\BveTs\\Scenarios\\JRTozai\\207-1000\\ATOProfile.out");
 	WCHAR DllPathStr[MAX_PATH] = { 0 };
 	GetModuleFileNameW((HINSTANCE)& __ImageBase, DllPathStr, _countof(DllPathStr));
 	std::experimental::filesystem::path dllPath(DllPathStr);
@@ -92,10 +91,10 @@ double ATO::followSpeed(double speed) { // PID
 	double controlOutput = K_P * curErr + K_I * integratedErr + K_D * (curErr - lastError) / deltaT;
 
 	if (controlOutput > 0) {
-		setATSHandle(0, controlOutput < 1 ? controlOutput : 1);
+		setATSHandle(0, min(controlOutput, 1));
 	}
 	else {
-		setATSHandle((-controlOutput) < 1 ? (-controlOutput) : 1, 0);
+		setATSHandle(min(-controlOutput, 1), 0);
 	}
 
 	lastError = curErr;

@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "ATOReadyState.h"
+#include "ATOState.h"
+#include "ATO.h"
 
 void ATOReadyState::start() {
 	context->finishStop();

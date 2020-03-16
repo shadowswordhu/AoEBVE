@@ -92,14 +92,12 @@
     <ClCompile Include="ATOEngagedState.cpp" />
     <ClCompile Include="ATOReadyState.cpp" />
     <ClCompile Include="ATOServiceBrakeState.cpp" />
-    <ClCompile Include="ATOSpeedProfile.cpp" />
     <ClCompile Include="ATOState.cpp" />
     <ClCompile Include="Ats.cpp" />
     <ClCompile Include="ATSKeys.cpp" />
     <ClCompile Include="AtsP.cpp" />
     <ClCompile Include="AtsSn.cpp" />
     <ClCompile Include="Command.cpp" />
-    <ClCompile Include="ControlSystem.cpp" />
     <ClCompile Include="Enforcement.cpp" />
     <ClCompile Include="SpeedCurve.cpp" />
     <ClCompile Include="Spp.cpp" />
@@ -107,7 +105,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Supervision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ats.def" />
@@ -115,10 +112,6 @@
   <ItemGroup>
     <ClInclude Include="ATO.h" />
     <ClInclude Include="ATOEngage.h" />
-    <ClInclude Include="ATOEngagedState.h" />
-    <ClInclude Include="ATOReadyState.h" />
-    <ClInclude Include="ATOServiceBrakeState.h" />
-    <ClInclude Include="ATOSpeedProfile.h" />
     <ClInclude Include="ATOState.h" />
     <ClInclude Include="Ats.h" />
     <ClInclude Include="ATSKeys.h" />
@@ -126,12 +119,10 @@
     <ClInclude Include="atsplugin.h" />
     <ClInclude Include="AtsSn.h" />
     <ClInclude Include="Command.h" />
-    <ClInclude Include="ControlSystem.h" />
     <ClInclude Include="Enforcement.h" />
     <ClInclude Include="SpeedCurve.h" />
     <ClInclude Include="Spp.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Supervision.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
