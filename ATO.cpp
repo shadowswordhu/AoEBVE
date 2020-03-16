@@ -1,21 +1,27 @@
 #include "stdafx.h"
 #include "ATO.h"
 
-#include <cstring>
+EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 void ATO::loadProfile() { // TODO: Load from file
 	speedCurves.clear();
 	
-	FILE* fin = fopen("R:\\Softwares\\BveTs\\Scenarios\\JRTozai\\207-1000\\ATOProfile.in", "r");
-	char fileName[256];
-	fscanf(fin, "%s", fileName);
-	fclose(fin);
-	
-	fin = fopen(fileName, "r");
+	std::wofstream inputFiles("R:\\Softwares\\BveTs\\Scenarios\\JRTozai\\207-1000\\ATOProfile.out");
+	WCHAR DllPathStr[MAX_PATH] = { 0 };
+	GetModuleFileNameW((HINSTANCE)& __ImageBase, DllPathStr, _countof(DllPathStr));
+	std::experimental::filesystem::path dllPath(DllPathStr);
+	std::experimental::filesystem::path nameOfProfileName("ATOProfile.in");
+	std::wifstream profileNameInput(dllPath.parent_path().append(nameOfProfileName).string());
+	std::wstring fileName;
+	profileNameInput >> fileName;
+	profileNameInput.close();
+
+	std::ifstream profileInput(fileName);
 	
 	double param1, param2;
-	char param3[128];
-	while (fscanf(fin, "%lf%lf%s", &param1, &param2, param3) != EOF) {
+	std::string param3;
+	while (!profileInput.eof()) {
+		profileInput >> param1 >> param2 >> param3;
 		if (param1 > 10) param1 -= 2.0;
 		if (param3[0] == 's') {
 			SpeedCurve curve(param1, param2);
@@ -23,13 +29,13 @@ void ATO::loadProfile() { // TODO: Load from file
 		}
 		else {
 			double p3;
-			sscanf(param3, "%lf", &p3);
+			p3 = stof(param3);
 			SpeedCurve curve(param1, param2, p3 + train_length);
 			speedCurves.push_back(curve);
 		}
 	}
 	
-	fclose(fin);
+	profileInput.close();
 	std::sort(speedCurves.begin(), speedCurves.end());
 }
 
