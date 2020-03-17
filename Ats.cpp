@@ -24,6 +24,10 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 			g_spp.DeltaT = &g_deltaT;
 			g_spp.BrakeNotch = &g_brakeNotch;
 
+			g_ato = new ATO(&g_output, &g_vehicleSpec, &g_vehicleState, &g_powerNotch, &g_brakeNotch);
+			g_ato->setState(new ATOReadyState(g_ato));
+			g_atoEngage = new ATOEngage(g_ato, &g_atskeys);
+
 			break;
 		case DLL_THREAD_ATTACH:
 		case DLL_THREAD_DETACH:
@@ -52,9 +56,7 @@ ATS_API void WINAPI SetVehicleSpec(ATS_VEHICLESPEC vehicleSpec)
 
 ATS_API void WINAPI Initialize(int brake)
 {
-	g_ato = new ATO(&g_output, &g_vehicleSpec, &g_vehicleState, &g_powerNotch, &g_brakeNotch);
-	g_ato->setState(new ATOReadyState(g_ato));
-	g_atoEngage = new ATOEngage(g_ato, &g_atskeys);
+	
 	
 	g_atssn.InitSn();
 	g_atsp.InitP();
@@ -114,7 +116,7 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 
 	panel[201] = g_ato->getBrakeOutput();
 
-	panel[233] = (int)(g_ato->dbg_ctrlOutput * 3.6);
+	panel[233] = (int)(g_ato->getSpeedTarget() * 3.6);
 	panel[230] = g_ato->getSpeedCurveAmount() % 10;
 	panel[231] = g_ato->getSpeedCurveAmount() / 10;
 	// サウンド出力
@@ -130,6 +132,7 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 ATS_API void WINAPI SetPower(int notch)
 {
 	g_powerNotch = notch;
+	g_ato->state->setPower(notch);
 }
 
 ATS_API void WINAPI SetBrake(int notch)
@@ -137,6 +140,7 @@ ATS_API void WINAPI SetBrake(int notch)
 	g_brakeNotch = notch;
 	g_atssn.CheckAts();
 	g_spp.NotchChanged();
+	g_ato->state->setBrake(notch);
 }
 
 ATS_API void WINAPI SetReverser(int pos)
@@ -182,6 +186,7 @@ ATS_API void WINAPI DoorOpen()
 
 ATS_API void WINAPI DoorClose()
 {
+	g_ato->finishStop();
 	g_pilotlamp = true;
 }
 

@@ -13,7 +13,17 @@ void ATOEngagedState::disengage() {
 void ATOEngagedState::run() {
 	double speedTarget = context->getSpeedTarget();
 	context->followSpeed(speedTarget);
-	if (context->getCurrentSpeed() < 1e-5) {
+	if (context->isTrainStopped()) {
 		context->setState(new ATOReadyState(context));
 	}
+}
+
+void ATOEngagedState::setBrake(int brake) {
+	if (brake > 0) {
+		context->setState(new ATOAvailableState(context));
+	}
+}
+
+void ATOEngagedState::setPower(int power) {
+
 }

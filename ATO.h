@@ -48,7 +48,7 @@ public:
 		powerNotch = _powerNotch;
 		brakeNotch = _brakeNotch;
 		loadProfile();
-		// setState(new ATOReadyState(this));
+		setState(new ATOReadyState(this));
 		// fout = fopen("R:\\Softwares\\BveTs\\Scenarios\\JRTozai\\207-1000\\test.out", "w");
 	}
 	void setState(ATOState* _state) {
@@ -81,9 +81,20 @@ public:
 		return (double)* powerNotch / (double)vehicleSpec->PowerNotches;
 	}
 
+	void setATSBrakeHandle(const int &brake) {
+		output->Brake = brake;
+	}
+
+	void setATSPowerHandle(const int &power) {
+		output->Power = power;
+	}
+
+	bool isTrainStopped() {
+		return vehicleState->Speed < 1e-5;
+	}
+
 	double getSpeedTarget();
 	void finishStop();
 	double followSpeed(double speed);
 	double dbg_ctrlOutput;
 };
-

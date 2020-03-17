@@ -14,6 +14,7 @@
 #include "ATSKeys.h"
 #include "ATO.h"
 #include "ATOEngage.h"
+#include "ATOState.h"
 
 
 #define ATS_BEACON_S 0 // Sƒƒ“ƒO

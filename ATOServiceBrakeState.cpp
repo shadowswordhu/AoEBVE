@@ -4,7 +4,7 @@
 
 void ATOServiceBrakeState::run() {
 	context->setATSHandle(1.0, 0);
-	if (context->getCurrentSpeed() < 1e-5) {
+	if (context->isTrainStopped()) {
 		context->setState(new ATOReadyState(context));
 	}
 }

@@ -88,6 +88,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ATO.cpp" />
+    <ClCompile Include="ATOAvailableState.cpp" />
     <ClCompile Include="ATOEngage.cpp" />
     <ClCompile Include="ATOEngagedState.cpp" />
     <ClCompile Include="ATOReadyState.cpp" />

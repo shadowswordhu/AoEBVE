@@ -8,6 +8,8 @@ public:
 	virtual void revokeStart() = 0;
 	virtual void disengage() = 0;
 	virtual void run() = 0;
+	virtual void setBrake(int) = 0;
+	virtual void setPower(int) = 0;
 };
 
 
@@ -24,6 +26,8 @@ public:
 	void revokeStart() override {}
 	void disengage() override {}
 	void run() override;
+	void setBrake(int) {}
+	void setPower(int) {}
 };
 
 class ATOReadyState :
@@ -39,6 +43,8 @@ public:
 	void revokeStart() override {}
 	void disengage() override {}
 	void run() override;
+	void setBrake(int);
+	void setPower(int);
 };
 
 class ATOEngagedState :
@@ -54,4 +60,23 @@ public:
 	void revokeStart() override;
 	void disengage() override;
 	void run() override;
+	void setBrake(int);
+	void setPower(int);
+};
+
+class ATOAvailableState :
+	public ATOState
+{
+private:
+	ATO* context;
+public:
+	ATOAvailableState(ATO* ato) {
+		context = ato;
+	}
+	void start() override {}
+	void revokeStart() override {}
+	void disengage() override {}
+	void run() override;
+	void setBrake(int);
+	void setPower(int);
 };
