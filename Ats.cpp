@@ -27,11 +27,17 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 			g_ato = new ATO(&g_output, &g_vehicleSpec, &g_vehicleState, &g_powerNotch, &g_brakeNotch);
 			g_ato->setState(new ATOReadyState(g_ato));
 			g_atoEngage = new ATOEngage(g_ato, &g_atskeys);
-
+			
+			//dmi = new DMIConnection;
+			//OutputDebugStringA("DMI created!\n");
+			//dmi->Connect();
+			//OutputDebugStringA("DMI connected!\n");
 			break;
 		case DLL_THREAD_ATTACH:
 		case DLL_THREAD_DETACH:
 		case DLL_PROCESS_DETACH:
+
+			// delete dmi;
 			break;
     }
     return TRUE;
@@ -57,7 +63,6 @@ ATS_API void WINAPI SetVehicleSpec(ATS_VEHICLESPEC vehicleSpec)
 ATS_API void WINAPI Initialize(int brake)
 {
 	
-	
 	g_atssn.InitSn();
 	g_atsp.InitP();
 	g_spp.InitSpp();
@@ -70,11 +75,9 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 	g_time = vehicleState.Time;
 	g_speed = vehicleState.Speed;
 	g_vehicleState = vehicleState;
-	
 
-	g_atssn.RunSn(); // ATS-SN
-	g_atsp.RunP(); // ATS-P
-    g_spp.RunSpp(); // 停車駅通過防止装置
+	//dmi->updateSpeed(vehicleState.Speed);
+
 
 	// ハンドル出力
 	if(g_atssn.AtsBrake || g_atsp.EmergencyBrake)
@@ -103,6 +106,9 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 	g_atoEngage->checkInput(g_time);
 	g_ato->state->run();
 
+	g_atssn.RunSn(); // ATS-SN
+	g_atsp.RunP(); // ATS-P
+	g_spp.RunSpp(); // 停車駅通過防止装置
 
 	// パネル出力
 	panel[0] = g_atssn.WhiteLamp;
@@ -114,9 +120,11 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 	panel[6] = g_atsp.AtspLamp;
 	panel[7] = 0; // 故障
 
+
+	panel[51] = g_ato->getATOLamp();
 	panel[201] = g_ato->getBrakeOutput();
 
-	panel[233] = (int)(g_ato->getSpeedTarget() * 3.6);
+	panel[233] = (int)(g_ato->getSpeedTarget(0) * 3.6);
 	panel[230] = g_ato->getSpeedCurveAmount() % 10;
 	panel[231] = g_ato->getSpeedCurveAmount() / 10;
 	// サウンド出力

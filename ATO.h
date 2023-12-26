@@ -16,14 +16,23 @@ class ATO
 {
 	
 private:
-	
+	const int BlinkPeriod = 500; // ms
+	int BlinkOnTime = 0; // ms
+
+
 	// FILE* fout;
 	double K_P = 1, K_I = 0.02, K_D = -0.01;
-	const double eps_stop = 0.3;
-	const double train_length = 150;
+	double K_P_acc = 1, K_I_acc = 0.02, K_D_acc = -0.01;
+	double integratedErr_acc = 0, integrateRoof_acc = 10, integrateFloor_acc = -1000;
+	const double eps_stop = 0.7;
+	const double car_length = 20;
+	double train_length = 20;
 	double lastError = 0;
+	double lastError_acc = 0;
+	double lastSpeed = 0;
 	int lastTime = 0;
 	double integratedErr = 0, integrateRoof = 10, integrateFloor = -1000;
+	
 
 	ATS_HANDLES* output = NULL;
 	ATS_VEHICLESPEC* vehicleSpec = NULL;
@@ -38,6 +47,8 @@ private:
 	void loadProfile();
 
 public:
+	double t_traction_reset = 2; // s
+
 	ATOState* state = NULL;
 
 	ATO(ATS_HANDLES* _output, ATS_VEHICLESPEC* _vehicleSpec, ATS_VEHICLESTATE* _vehicleState,
@@ -47,6 +58,7 @@ public:
 		vehicleSpec = _vehicleSpec;
 		powerNotch = _powerNotch;
 		brakeNotch = _brakeNotch;
+		
 		loadProfile();
 		setState(new ATOReadyState(this));
 		// fout = fopen("R:\\Softwares\\BveTs\\Scenarios\\JRTozai\\207-1000\\test.out", "w");
@@ -89,12 +101,29 @@ public:
 		output->Power = power;
 	}
 
+	void setATOLampOn() {
+		BlinkOnTime = BlinkPeriod;
+	}
+
+	void setATOLampOff() {
+		BlinkOnTime = 0;
+	}
+
+	void setATOLampBlink() {
+		BlinkOnTime = BlinkPeriod >> 1;
+	}
+
+	int getATOLamp() {
+		return (vehicleState->Time % BlinkPeriod) < BlinkOnTime;
+	}
+
 	bool isTrainStopped() {
 		return vehicleState->Speed < 1e-5;
 	}
 
-	double getSpeedTarget();
+	double getSpeedTarget(double delay);
 	void finishStop();
-	double followSpeed(double speed);
+	double followSpeed(double speed, double speed_dynamic_reaction);
 	double dbg_ctrlOutput;
+
 };

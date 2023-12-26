@@ -21,6 +21,7 @@ private:
 public:
 	ATOServiceBrakeState(ATO* ato) {
 		context = ato;
+		
 	}
 	void start() override {}
 	void revokeStart() override {}
@@ -38,6 +39,7 @@ private:
 public:
 	ATOReadyState(ATO* ato) {
 		context = ato;
+		
 	}
 	void start() override;
 	void revokeStart() override {}
@@ -55,6 +57,7 @@ private:
 public:
 	ATOEngagedState(ATO* ato) {
 		context = ato;
+		
 	}
 	void start() override {}
 	void revokeStart() override;
@@ -69,6 +72,7 @@ class ATOAvailableState :
 {
 private:
 	ATO* context;
+
 public:
 	ATOAvailableState(ATO* ato) {
 		context = ato;

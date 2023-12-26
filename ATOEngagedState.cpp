@@ -11,8 +11,11 @@ void ATOEngagedState::disengage() {
 }
 
 void ATOEngagedState::run() {
-	double speedTarget = context->getSpeedTarget();
-	context->followSpeed(speedTarget);
+	double speedTarget = context->getSpeedTarget(0);
+	double speedTarget_delay = context->getSpeedTarget(context->t_traction_reset);
+	context->followSpeed(speedTarget, speedTarget_delay);
+	context->setATOLampOn();
+
 	if (context->isTrainStopped()) {
 		context->setState(new ATOReadyState(context));
 	}

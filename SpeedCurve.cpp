@@ -24,6 +24,24 @@ void SpeedCurve::calc_param() {
 	t_total = t_tr * 2 + t_const_a;
 }
 
+double SpeedCurve::a_t(double t) const {
+	double a;
+	if (t < t_tr) {
+		a = decelerationRate * t;
+	}
+	else if (t < t_tr + t_const_a) {
+		a = maxDeceleration;
+	}
+	else if (t < t_tr + t_tr + t_const_a) {
+		double rest_t = t_const_a + t_tr + t_tr - t;
+		a = - decelerationRate * rest_t;
+	}
+	else {
+		a = 0;
+	}
+	return a;
+}
+
 double SpeedCurve::v_t(double t) const{
 	double v;
 	if (t < t_tr) {
@@ -107,6 +125,14 @@ double SpeedCurve::getSpeed(double position) {
 	}
 }
 	
+double SpeedCurve::getAcceleration(double position) {
+	if (position < targetPosition) {
+		return a_t(getTimeOfArrival(position));
+	}
+	else {
+		return 0;
+	}
+}
 
 double SpeedCurve::getDeceleration(double position) {
 	return 0; // TODO
@@ -143,8 +169,8 @@ double SpeedCurve::getTimeOfArrival(double position) {
 	return tl;
 }
 
-bool SpeedCurve::isExpired(double position) {
-	if (position > expirePosition) {
+bool SpeedCurve::isExpired(double position, double trainLength) {
+	if (position > expirePosition + trainLength) {
 		return true;
 	}
 	return false;

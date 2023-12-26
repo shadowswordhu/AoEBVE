@@ -8,9 +8,9 @@ void ATO::loadProfile() { // TODO: Load from file
 	//std::wofstream inputFiles("R:\\Softwares\\BveTs\\Scenarios\\JRTozai\\207-1000\\ATOProfile.out");
 	WCHAR DllPathStr[MAX_PATH] = { 0 };
 	GetModuleFileNameW((HINSTANCE)& __ImageBase, DllPathStr, _countof(DllPathStr));
-	std::experimental::filesystem::path dllPath(DllPathStr);
-	std::experimental::filesystem::path nameOfProfileName("ATOProfile.in");
-	std::wifstream profileNameInput(dllPath.parent_path().append(nameOfProfileName).string());
+	std::filesystem::path dllPath(DllPathStr);
+	std::filesystem::path nameOfProfileName("ATOProfile.in");
+	std::wifstream profileNameInput(dllPath.parent_path()/nameOfProfileName.string());
 	std::wstring fileName;
 	profileNameInput >> fileName;
 	profileNameInput.close();
@@ -38,17 +38,19 @@ void ATO::loadProfile() { // TODO: Load from file
 	std::sort(speedCurves.begin(), speedCurves.end());
 }
 
-double ATO::getSpeedTarget() {
+double ATO::getSpeedTarget(double delay) {
 	double result = 1000;
 
+	double Location = vehicleState->Location + vehicleState->Speed * delay / 3.6;
+
 	for (; activeBegin < activeEnd; ++activeBegin) {
-		if (!speedCurves[activeBegin].isExpired(vehicleState->Location)) {
+		if (!speedCurves[activeBegin].isExpired(vehicleState->Location, vehicleSpec->Cars * car_length)) {
 			break;
 		}
 	}
 
 	for (int i = activeBegin; i < activeEnd; ++i) {
-		if (speedCurves[i].isExpired(vehicleState->Location)) {
+		if (speedCurves[i].isExpired(vehicleState->Location, vehicleSpec->Cars * car_length)) {
 			continue;
 		}
 		else {
@@ -62,7 +64,7 @@ double ATO::getSpeedTarget() {
 			break;
 		}
 
-		if (speedCurves[i].getRange(vehicleState->Speed, 1) < vehicleState->Location) {
+		if (speedCurves[i].getRange(vehicleState->Speed, 1) < vehicleState->Location + 1e-5) {
 
 			speedCurves[i].setStartSpeed(vehicleState->Speed, 1);
 			activeEnd = i + 1;
@@ -71,27 +73,64 @@ double ATO::getSpeedTarget() {
 	return result;
 }
 
+
 void ATO::finishStop() {
 	for (int i = activeBegin; i < activeEnd; ++i) {
-		if (!speedCurves[i].isExpired(vehicleState->Location)
-			&& speedCurves[i].getSpeed(vehicleState->Location) < 0.5) {
+		if (!speedCurves[i].isExpired(vehicleState->Location, vehicleSpec->Cars * car_length)
+			&& speedCurves[i].getSpeed(vehicleState->Location) < 1) {
 			speedCurves[i].setExpired();
-			break;
+			//break;
 		}
 	}
 }
 
-double ATO::followSpeed(double speed) { // PID
+/*
+* 
+double ato::followspeed(double speed) { 
+	double curerr = speed - vehiclestate->speed / 3.6;
+	int curtime = vehiclestate->time;
+	double deltat = ((double)curtime - (double)lasttime) / 1000.0;
+	integratederr += deltat * (curerr + lasterror) / 2;
+	integratederr = min(integratederr, integrateroof);
+	integratederr = max(integratederr, integratefloor);
+	double targetacc = k_p * curerr + k_i * integratederr + k_d * (curerr - lasterror) / deltat;
+
+	double controloutput = targetacc;
+
+	if (controloutput > 0) {
+		setatshandle(0, min(controloutput, 1));
+	}
+	else {
+		setatshandle(min(-controloutput, 1), 0);
+	}
+
+	lasterror = curerr;
+	lasttime = curtime;
+	dbg_ctrloutput = speed;
+	return controloutput;
+}
+
+*/
+
+double ATO::followSpeed(double speed, double traction_reset) {
 	double curErr = speed - vehicleState->Speed / 3.6;
 	int curTime = vehicleState->Time;
 	double deltaT = ((double)curTime - (double)lastTime) / 1000.0;
 	integratedErr += deltaT * (curErr + lastError) / 2;
 	integratedErr = min(integratedErr, integrateRoof);
 	integratedErr = max(integratedErr, integrateFloor);
-	double controlOutput = K_P * curErr + K_I * integratedErr + K_D * (curErr - lastError) / deltaT;
+	double targetAcc = K_P * curErr + K_I * integratedErr + K_D * (curErr - lastError) / deltaT;
+
+	double controlOutput = targetAcc;
+
+	double speed_dynamic_reaction = traction_reset;
 
 	if (controlOutput > 0) {
 		setATSHandle(0, min(controlOutput, 1));
+		if (speed > speed_dynamic_reaction) {
+			// cut off traction to prevent overshoot
+			setATSHandle(0, 0);
+		}
 	}
 	else {
 		setATSHandle(min(-controlOutput, 1), 0);

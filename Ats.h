@@ -7,6 +7,11 @@
 //#pragma data_seg(".shared")
 //#pragma data_seg()
 
+// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
+
 #include "atsplugin.h"
 #include "Atssn.h"
 #include "Atsp.h"
@@ -15,6 +20,9 @@
 #include "ATO.h"
 #include "ATOEngage.h"
 #include "ATOState.h"
+// #include "DMIConnection.h"
+
+
 
 
 #define ATS_BEACON_S 0 // SÉçÉìÉO
@@ -50,3 +58,5 @@ ATS_VEHICLESTATE g_vehicleState;
 
 ATO *g_ato;
 ATOEngage *g_atoEngage;
+
+// DMIConnection *dmi;

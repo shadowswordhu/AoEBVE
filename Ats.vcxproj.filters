@@ -63,6 +63,9 @@
     <ClCompile Include="ATOAvailableState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DMIConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Ats.def">
@@ -107,6 +110,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpeedCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DMIConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

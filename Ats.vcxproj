@@ -12,6 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E3FF2490-DD6B-4985-8ECB-2E57BB31B19B}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -38,7 +39,7 @@
     <_ProjectFileVersion>16.0.28916.169</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>Debug\</OutDir>
+    <OutDir>..\..\Softwares\mackoy\BveTs5\Scenarios\JRTozai\207-1000</OutDir>
     <IntDir>Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
@@ -57,6 +58,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>Ats.def</ModuleDefinitionFile>
@@ -99,6 +101,7 @@
     <ClCompile Include="AtsP.cpp" />
     <ClCompile Include="AtsSn.cpp" />
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="DMIConnection.cpp" />
     <ClCompile Include="Enforcement.cpp" />
     <ClCompile Include="SpeedCurve.cpp" />
     <ClCompile Include="Spp.cpp" />
@@ -120,6 +123,7 @@
     <ClInclude Include="atsplugin.h" />
     <ClInclude Include="AtsSn.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="DMIConnection.h" />
     <ClInclude Include="Enforcement.h" />
     <ClInclude Include="SpeedCurve.h" />
     <ClInclude Include="Spp.h" />

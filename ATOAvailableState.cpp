@@ -3,7 +3,8 @@
 #include "ATO.h"
 
 void ATOAvailableState::run() {
-
+	context->getSpeedTarget(0);
+	context->setATOLampOff();
 	if (context->isTrainStopped() && context->getPowerHandlePosition() < 1e-5) {
 		context->setState(new ATOReadyState(context));
 	}
