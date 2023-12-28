@@ -27,17 +27,19 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 			g_ato = new ATO(&g_output, &g_vehicleSpec, &g_vehicleState, &g_powerNotch, &g_brakeNotch);
 			g_ato->setState(new ATOReadyState(g_ato));
 			g_atoEngage = new ATOEngage(g_ato, &g_atskeys);
-			
-			//dmi = new DMIConnection;
-			//OutputDebugStringA("DMI created!\n");
-			//dmi->Connect();
-			//OutputDebugStringA("DMI connected!\n");
+
+			dmi = new DMIConnection;
+			OutputDebugStringA("DMI created!\n");
+			dmi->Connect();
+			OutputDebugStringA("DMI connected!\n");
+			dmi->updateSpeed(138);
+
 			break;
 		case DLL_THREAD_ATTACH:
 		case DLL_THREAD_DETACH:
 		case DLL_PROCESS_DETACH:
 
-			// delete dmi;
+			//delete dmi;
 			break;
     }
     return TRUE;
@@ -58,11 +60,12 @@ ATS_API void WINAPI SetVehicleSpec(ATS_VEHICLESPEC vehicleSpec)
 	g_atsp.EmergencyNotch = g_emgBrake;
 	g_atsp.ServiceNotch = vehicleSpec.AtsNotch;
 	g_spp.ServiceNotch = vehicleSpec.AtsNotch;
+
+	
 }
 
 ATS_API void WINAPI Initialize(int brake)
 {
-	
 	g_atssn.InitSn();
 	g_atsp.InitP();
 	g_spp.InitSpp();
@@ -76,7 +79,11 @@ ATS_API ATS_HANDLES WINAPI Elapse(ATS_VEHICLESTATE vehicleState, int *panel, int
 	g_speed = vehicleState.Speed;
 	g_vehicleState = vehicleState;
 
-	//dmi->updateSpeed(vehicleState.Speed);
+
+	if (dmi != nullptr) {
+		dmi->updateSpeed(vehicleState.Speed);
+	}
+	
 
 
 	// ƒnƒ“ƒhƒ‹o—Í
@@ -154,6 +161,7 @@ ATS_API void WINAPI SetBrake(int notch)
 ATS_API void WINAPI SetReverser(int pos)
 {
 	g_reverser = pos;
+	
 }
 
 ATS_API void WINAPI KeyDown(int atsKeyCode)

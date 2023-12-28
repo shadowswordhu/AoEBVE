@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define DEFAULT_BUFLEN 512
-#define DMI_ADDRESS "192.168.8.110"
+#define DMI_ADDRESS "192.168.178.61"
 #define DEFAULT_PORT "4444"
 
 

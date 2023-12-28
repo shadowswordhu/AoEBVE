@@ -20,7 +20,7 @@
 #include "ATO.h"
 #include "ATOEngage.h"
 #include "ATOState.h"
-// #include "DMIConnection.h"
+#include "DMIConnection.h"
 
 
 
@@ -59,4 +59,4 @@ ATS_VEHICLESTATE g_vehicleState;
 ATO *g_ato;
 ATOEngage *g_atoEngage;
 
-// DMIConnection *dmi;
+DMIConnection *dmi;

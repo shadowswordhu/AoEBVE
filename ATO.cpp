@@ -84,34 +84,6 @@ void ATO::finishStop() {
 	}
 }
 
-/*
-* 
-double ato::followspeed(double speed) { 
-	double curerr = speed - vehiclestate->speed / 3.6;
-	int curtime = vehiclestate->time;
-	double deltat = ((double)curtime - (double)lasttime) / 1000.0;
-	integratederr += deltat * (curerr + lasterror) / 2;
-	integratederr = min(integratederr, integrateroof);
-	integratederr = max(integratederr, integratefloor);
-	double targetacc = k_p * curerr + k_i * integratederr + k_d * (curerr - lasterror) / deltat;
-
-	double controloutput = targetacc;
-
-	if (controloutput > 0) {
-		setatshandle(0, min(controloutput, 1));
-	}
-	else {
-		setatshandle(min(-controloutput, 1), 0);
-	}
-
-	lasterror = curerr;
-	lasttime = curtime;
-	dbg_ctrloutput = speed;
-	return controloutput;
-}
-
-*/
-
 double ATO::followSpeed(double speed, double traction_reset) {
 	double curErr = speed - vehicleState->Speed / 3.6;
 	int curTime = vehicleState->Time;
@@ -124,17 +96,38 @@ double ATO::followSpeed(double speed, double traction_reset) {
 	double controlOutput = targetAcc;
 
 	double speed_dynamic_reaction = traction_reset;
-
-	if (controlOutput > 0) {
-		setATSHandle(0, min(controlOutput, 1));
-		if (speed > speed_dynamic_reaction) {
-			// cut off traction to prevent overshoot
-			setATSHandle(0, 0);
+	
+	if (speed > (10.0 / 3.6)) {
+		if (controlOutput > 0) {
+			setATSHandle(0, min(controlOutput, 1));
+			if (speed > speed_dynamic_reaction) {
+				// cut off traction to prevent overshoot
+				setATSHandle(0, 0);
+			}
+		}
+		else {
+			setATSHandle(min(-controlOutput, 1), 0);
 		}
 	}
-	else {
-		setATSHandle(min(-controlOutput, 1), 0);
+	else if (speed > (3.0 / 3.6) || speed < 1e6) {  // no traction command between 3 - 10 km/h, brake by all means when overshoot.
+		if (controlOutput > 0) {
+			setATSHandle(0, 0);
+		}
+		else {
+			setATSHandle(min(-controlOutput, 1), 0);
+		}
 	}
+	else if (vehicleState->Speed > 2.0) {
+		setATSHandle(0.25, 0);
+	}
+	else if (vehicleState->Speed > 0.5) {
+		setATSHandle(0.125, 0);
+	}
+	else {
+		setATSHandle(0, 0);
+	}
+
+	
 
 	lastError = curErr;
 	lastTime = curTime;

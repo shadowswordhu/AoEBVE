@@ -7,7 +7,7 @@ private:
 
 	//FILE* fout;
 
-	double maxDeceleration = 0.7;          // m/(s^2)
+	double maxDeceleration = 0.85;          // m/(s^2)
 	double decelerationRate = 0.07;          // m/(s^3)
 	double defaultExpireDistance = 1e6; // m
 	double maxRange = 0;
